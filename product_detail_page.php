@@ -1,3 +1,31 @@
+<?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "skycode_shop";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+// Check connection
+if ($conn->connect_error) {
+  die("Connection failed: " . $conn->connect_error);
+}
+
+// True because $a is set
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+$sql = "SELECT * FROM produits WHERE ID_Pro =".$id ;
+
+$result = $conn->query($sql);
+
+
+
+}
+
+
+$conn->close();
+
+?>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -36,16 +64,22 @@
  
         <!-- Page content-->
         <div class="container">
+
+            <?php
+                if ($result->num_rows > 0) {
+                    // output data of each row
+                    while($row = $result->fetch_assoc()) {
+                ?>
             <div class="row">
                 <!-- Blog entries-->
                 <div class="col-lg-8">
                     <!-- Featured blog post-->
                     <div class="card mb-4">
-                        <a href="#!"><img class="card-img-top" src="https://dummyimage.com/850x350/dee2e6/6c757d.jpg" alt="..." /></a>
+                        <a href="#!"><img class="card-img-top" src="<?php echo $row["image"]?>" alt="..." /></a>
                         <div class="card-body">
                             <div class="small text-muted"></div>
-                            <h2 class="card-title">Featured Post Title</h2>
-                            <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Reiciendis aliquid atque, nulla? Quos cum ex quis soluta, a laboriosam. Dicta expedita corporis animi vero voluptate voluptatibus possimus, veniam magni quis!</p>
+                            <h2 class="card-title"><?php echo $row["Name_Pro"]?></h2>
+                            <p class="card-text"><?php echo $row["Description_Pro"]?></p>
                         
                         </div>
                     </div>
@@ -57,11 +91,12 @@
                     <div class="card mb-4">
                         <div class="card-header">Order</div>
                         <div class="card-body">
-                            <form class="well form-horizontal">
+                            <form  action="order.php" method="post" class="well form-horizontal">
+                                <input name="id" type="hidden" value="<?php echo $id?>"/> 
                                    <div class="form-group mb-2">
                                     <label class="col-md-4 control-label">Full Name</label>
                                       <div class=" inputGroupContainer">
-                                         <div class="input-group-prepend"><input id="fullName" name="fullName" placeholder="Full Name" class="form-control" required="true" value="" type="text"></div>
+                                         <div class="input-group-prepend"><input id="fullName" name="Name_Client" placeholder="Full Name" class="form-control" required="true" value="" type="text"></div>
                                       </div>
                                    </div>
                                    <div class="form-group mb-2">
@@ -78,7 +113,7 @@
                                    </div>
                                    <div class="form-group mb-3 ">
                                       <div class="input-group ">
-                                         <select class="custom-select col-12" id="inputGroupSelect01">
+                                         <select name ="State_Order" class="custom-select col-12" id="inputGroupSelect01">
                                              <option selected>the state</option>
                                              <option value="1">One</option>
                                              <option value="2">Two</option>
@@ -100,6 +135,8 @@
                   
                 </div>
             </div>
+                             <?php 
+                 }}?>  
         </div>
         
         <!-- Footer-->
